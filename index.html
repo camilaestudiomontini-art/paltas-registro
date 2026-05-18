@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Registro Campaña Paltas</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f7f2;color:#1a1a1a;min-height:100vh}
+.topbar{background:#3B6D11;color:#fff;padding:14px 24px;display:flex;align-items:center;gap:12px}
+.topbar .logo{font-size:24px}
+.topbar h1{font-size:17px;font-weight:600;letter-spacing:-.01em}
+.topbar p{font-size:12px;opacity:.75;margin-top:1px}
+.container{max-width:780px;margin:0 auto;padding:24px 16px}
+.card{background:#fff;border-radius:12px;border:1px solid #e4eade;padding:20px 24px;margin-bottom:16px}
+.card-title{font-size:12px;font-weight:600;color:#639922;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px}
+textarea{width:100%;font-size:14px;padding:10px 12px;border-radius:8px;border:1px solid #dde8d4;background:#f9fdf6;color:#1a1a1a;resize:vertical;min-height:110px;font-family:inherit;line-height:1.6}
+textarea:focus{outline:none;border-color:#639922;background:#fff}
+textarea::placeholder{color:#9db88a}
+.btn-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+button{display:inline-flex;align-items:center;gap:6px;padding:0 16px;height:38px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid #dde8d4;background:#fff;color:#2d5a0a;transition:all .15s}
+button:hover{background:#f0f7e8;border-color:#639922}
+button.primary{background:#3B6D11;border-color:#3B6D11;color:#fff}
+button.primary:hover{background:#2d5a0a}
+button:disabled{opacity:.4;cursor:not-allowed}
+button.danger{border-color:#f09595;color:#a32d2d}
+button.danger:hover{background:#fcebeb}
+.status{padding:9px 14px;border-radius:8px;font-size:13px;margin-top:10px;display:none;line-height:1.5}
+.status.success{display:block;background:#eaf3de;color:#27500a;border:1px solid #c0dd97}
+.status.error{display:block;background:#fcebeb;color:#791f1f;border:1px solid #f09595}
+.status.loading{display:block;background:#f5f7f2;color:#5f6b52;border:1px solid #dde8d4}
+.preview{margin-top:12px;padding:12px 14px;background:#f9fdf6;border-radius:8px;border:1px solid #dde8d4;font-size:13px;line-height:1.8;display:none}
+.preview.show{display:block}
+.tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;margin-right:4px}
+.tag.Recepcion{background:#eaf3de;color:#27500a}
+.tag.Produccion{background:#e6f1fb;color:#0c447c}
+.tag.Envio{background:#faeeda;color:#633806}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat{background:#fff;border-radius:10px;border:1px solid #e4eade;padding:14px 16px}
+.stat .lbl{font-size:12px;color:#7a9460;margin-bottom:4px}
+.stat .val{font-size:22px;font-weight:600;color:#1a1a1a}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:8px 10px;border-bottom:1.5px solid #e4eade;color:#7a9460;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid #f0f5eb;color:#1a1a1a;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafdf6}
+.empty{text-align:center;padding:36px;color:#9db88a;font-size:14px}
+.empty .ico{font-size:32px;margin-bottom:8px}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.input-row label{font-size:12px;color:#7a9460;display:block;margin-bottom:4px;font-weight:500}
+input[type=text],input[type=password]{width:100%;font-size:13px;padding:8px 11px;height:36px;border-radius:7px;border:1px solid #dde8d4;background:#f9fdf6;color:#1a1a1a}
+input:focus{outline:none;border-color:#639922;background:#fff}
+.help{font-size:12px;color:#9db88a;margin-top:6px;line-height:1.5}
+.tbl-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.tbl-header .card-title{margin-bottom:0}
+.badge-count{display:inline-block;background:#eaf3de;color:#27500a;border-radius:20px;font-size:11px;font-weight:600;padding:2px 8px;margin-left:6px}
+@media(max-width:500px){.stats{grid-template-columns:1fr 1fr}.input-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">🥑</div>
+  <div>
+    <h1>Registro Campaña de Paltas</h1>
+    <p>Pegá el mensaje de WhatsApp → se guarda en tu Excel de Dropbox</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <div class="card-title">Configuración Dropbox</div>
+    <div class="input-row">
+      <div>
+        <label>Access Token</label>
+        <input type="password" id="dbToken" placeholder="sl.xxxxxxx..."/>
+      </div>
+      <div>
+        <label>Ruta del archivo Excel en Dropbox</label>
+        <input type="text" id="dbPath" value="/paltas/registro_paltas.xlsx"/>
+      </div>
+    </div>
+    <div class="help">El token se guarda solo en tu navegador (localStorage). No se envía a ningún servidor nuestro.</div>
+    <div id="cfgStatus" class="status"></div>
+    <div class="btn-row">
+      <button class="primary" onclick="saveConfig()">💾 Guardar configuración</button>
+      <button onclick="testConnection()">🔌 Probar conexión</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Cargar mensaje de WhatsApp</div>
+    <textarea id="msgInput" placeholder="Pegá el mensaje del grupo acá...
+
+Ejemplo:
+13/05 Recepcion Lote Nro 3 Zelarayan 209 bandejas 3862,6 kg
+Producción lote Nro 2 Zelarayan 514 cajas Descarte 815,8 kg"></textarea>
+    <div id="parseStatus" class="status"></div>
+    <div id="previewBox" class="preview"></div>
+    <div class="btn-row">
+      <button class="primary" id="parseBtn" onclick="parseAndSave()">✨ Parsear y guardar en Dropbox</button>
+      <button onclick="document.getElementById('msgInput').value='';document.getElementById('previewBox').className='preview'">✕ Limpiar</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="lbl">Total registros</div><div class="val" id="statTotal">—</div></div>
+    <div class="stat"><div class="lbl">Kg acumulados</div><div class="val" id="statKg">—</div></div>
+    <div class="stat"><div class="lbl">Último registro</div><div class="val" id="statUlt" style="font-size:15px;padding-top:4px">—</div></div>
+  </div>
+
+  <div class="card">
+    <div class="tbl-header">
+      <div class="card-title">Registros cargados <span class="badge-count" id="recordCount">0</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button onclick="loadFromDropbox()">🔄 Refrescar desde Dropbox</button>
+        <button onclick="downloadExcelLocal()">⬇️ Descargar Excel</button>
+      </div>
+    </div>
+    <div class="tbl-wrap" id="tableWrap">
+      <div class="empty"><div class="ico">📭</div>Configurá Dropbox y cargá el primer mensaje.</div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+let records = [];
+let cfg = {token:'', path:'/paltas/registro_paltas.xlsx'};
+
+function loadConfig(){
+  const s = localStorage.getItem('palta_cfg');
+  if(s) cfg = JSON.parse(s);
+  document.getElementById('dbToken').value = cfg.token||'';
+  document.getElementById('dbPath').value = cfg.path||'/paltas/registro_paltas.xlsx';
+}
+
+function saveConfig(){
+  cfg.token = document.getElementById('dbToken').value.trim();
+  cfg.path = document.getElementById('dbPath').value.trim();
+  localStorage.setItem('palta_cfg', JSON.stringify(cfg));
+  showStatus('cfgStatus','✓ Configuración guardada en este navegador.','success');
+}
+
+async function testConnection(){
+  if(!cfg.token){showStatus('cfgStatus','Primero guardá el token.','error');return;}
+  showStatus('cfgStatus','Probando conexión...','loading');
+  try{
+    const r = await fetch('/api/test-dropbox', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({token: cfg.token})
+    });
+    const d = await r.json();
+    if(d.ok) showStatus('cfgStatus','✓ Conectado como '+d.name,'success');
+    else showStatus('cfgStatus','Error: '+d.error,'error');
+  }catch(e){showStatus('cfgStatus','Error de conexión: '+e.message,'error');}
+}
+
+async function parseAndSave(){
+  const msg = document.getElementById('msgInput').value.trim();
+  if(!msg){showStatus('parseStatus','Pegá un mensaje primero.','error');return;}
+  if(!cfg.token){showStatus('parseStatus','Configurá el token de Dropbox primero.','error');return;}
+  document.getElementById('parseBtn').disabled = true;
+  showStatus('parseStatus','Interpretando mensaje con IA...','loading');
+  try{
+    const r = await fetch('/api/parse', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({message: msg})
+    });
+    const d = await r.json();
+    if(!d.records||d.records.length===0){
+      showStatus('parseStatus','No se encontraron registros en el mensaje.','error');
+      document.getElementById('parseBtn').disabled=false;
+      return;
+    }
+    showPreview(d.records);
+    showStatus('parseStatus','Guardando en Dropbox...','loading');
+    d.records.forEach(rec => records.push(rec));
+    await saveToDropbox();
+    updateStats(); renderTable();
+    showStatus('parseStatus','✓ '+d.records.length+' registro(s) guardados en Dropbox.','success');
+    document.getElementById('msgInput').value='';
+  }catch(e){
+    showStatus('parseStatus','Error: '+e.message,'error');
+  }
+  document.getElementById('parseBtn').disabled=false;
+}
+
+function showPreview(parsed){
+  let html='<strong style="font-size:12px;color:#7a9460">Registros detectados:</strong><br>';
+  parsed.forEach(r=>{
+    let det=[];
+    if(r.cajas) det.push(r.cajas+' cajas');
+    if(r.bandejas) det.push(r.bandejas+' bandejas');
+    if(r.kg) det.push(r.kg+' kg');
+    if(r.descarte_kg) det.push('descarte '+r.descarte_kg+' kg');
+    html+=`<span class="tag ${r.tipo}">${r.tipo}</span> <b>${r.fecha}</b> · Lote ${r.lote} · ${r.productor} · ${det.join(', ')}<br>`;
+  });
+  const box=document.getElementById('previewBox');
+  box.innerHTML=html; box.className='preview show';
+}
+
+async function saveToDropbox(){
+  const wb=XLSX.utils.book_new();
+  const headers=['Fecha','Tipo','Lote','Productor','Cajas','Bandejas','Kg','Descarte Kg','Notas'];
+  const rows=records.map(r=>[r.fecha,r.tipo,r.lote,r.productor,r.cajas||'',r.bandejas||'',r.kg||'',r.descarte_kg||'',r.notas||'']);
+  const ws=XLSX.utils.aoa_to_sheet([headers,...rows]);
+  ws['!cols']=[{wch:12},{wch:12},{wch:8},{wch:16},{wch:8},{wch:10},{wch:10},{wch:12},{wch:20}];
+  XLSX.utils.book_append_sheet(wb,ws,'Registros');
+  const buf=XLSX.write(wb,{type:'base64',bookType:'xlsx'});
+  const r=await fetch('/api/save-dropbox',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({token:cfg.token,path:cfg.path,data:buf})
+  });
+  if(!r.ok) throw new Error('Error al guardar en Dropbox');
+}
+
+async function loadFromDropbox(){
+  if(!cfg.token){return;}
+  showStatus('parseStatus','Cargando datos desde Dropbox...','loading');
+  try{
+    const r=await fetch('/api/load-dropbox',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({token:cfg.token,path:cfg.path})
+    });
+    const d=await r.json();
+    if(d.records){
+      records=d.records;
+      updateStats(); renderTable();
+      showStatus('parseStatus','✓ Datos cargados ('+records.length+' registros).','success');
+    } else {
+      showStatus('parseStatus','No hay archivo en Dropbox aún. Se creará al guardar el primer registro.','loading');
+    }
+  }catch(e){
+    showStatus('parseStatus','No se pudo cargar desde Dropbox.','error');
+  }
+}
+
+function updateStats(){
+  document.getElementById('statTotal').textContent=records.length;
+  const totalKg=records.reduce((acc,r)=>{
+    const k=parseFloat(String(r.kg||'0').replace(',','.'));
+    return acc+(isNaN(k)?0:k);
+  },0);
+  document.getElementById('statKg').textContent=totalKg>0?totalKg.toLocaleString('es-AR',{maximumFractionDigits:0}):'0';
+  if(records.length>0){
+    document.getElementById('statUlt').textContent=records[records.length-1].fecha||'—';
+  }
+  document.getElementById('recordCount').textContent=records.length;
+}
+
+function renderTable(){
+  const wrap=document.getElementById('tableWrap');
+  if(records.length===0){
+    wrap.innerHTML='<div class="empty"><div class="ico">📭</div>Aún no hay registros.</div>';
+    return;
+  }
+  let html='<table><thead><tr><th>Fecha</th><th>Tipo</th><th>Lote</th><th>Productor</th><th>Cajas/Band.</th><th>Kg</th><th>Descarte kg</th><th></th></tr></thead><tbody>';
+  [...records].reverse().forEach((r,i)=>{
+    const idx=records.length-1-i;
+    const cant=r.cajas?r.cajas+' c.':(r.bandejas?r.bandejas+' b.':'—');
+    html+=`<tr>
+      <td>${r.fecha||'—'}</td>
+      <td><span class="tag ${r.tipo}">${r.tipo||'—'}</span></td>
+      <td>${r.lote||'—'}</td>
+      <td>${r.productor||'—'}</td>
+      <td>${cant}</td>
+      <td>${r.kg||'—'}</td>
+      <td>${r.descarte_kg||'—'}</td>
+      <td><button class="danger" style="height:26px;padding:0 8px;font-size:12px" onclick="deleteRecord(${idx})">✕</button></td>
+    </tr>`;
+  });
+  html+='</tbody></table>';
+  wrap.innerHTML=html;
+}
+
+async function deleteRecord(idx){
+  if(!confirm('¿Eliminar este registro?')) return;
+  records.splice(idx,1);
+  updateStats(); renderTable();
+  if(cfg.token) await saveToDropbox();
+}
+
+function downloadExcelLocal(){
+  if(records.length===0){alert('No hay registros para descargar.');return;}
+  const wb=XLSX.utils.book_new();
+  const headers=['Fecha','Tipo','Lote','Productor','Cajas','Bandejas','Kg','Descarte Kg','Notas'];
+  const rows=records.map(r=>[r.fecha,r.tipo,r.lote,r.productor,r.cajas||'',r.bandejas||'',r.kg||'',r.descarte_kg||'',r.notas||'']);
+  const ws=XLSX.utils.aoa_to_sheet([headers,...rows]);
+  ws['!cols']=[{wch:12},{wch:12},{wch:8},{wch:16},{wch:8},{wch:10},{wch:10},{wch:12},{wch:20}];
+  XLSX.utils.book_append_sheet(wb,ws,'Registros');
+  XLSX.writeFile(wb,'registro_paltas.xlsx');
+}
+
+function showStatus(id,msg,type){
+  const el=document.getElementById(id);
+  el.textContent=msg; el.className='status '+type;
+}
+
+loadConfig();
+loadFromDropbox();
+</script>
+</body>
+</html>

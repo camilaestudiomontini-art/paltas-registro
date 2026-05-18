@@ -1,0 +1,8 @@
+{
+  "name": "paltas-registro",
+  "version": "1.0.0",
+  "description": "Registro de campaña de paltas - integración WhatsApp + Dropbox",
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
+}
